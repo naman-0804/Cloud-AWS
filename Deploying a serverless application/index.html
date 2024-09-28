@@ -61,7 +61,7 @@
             let myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
         
-            // Wrap the data in httpMethod and body
+
             let raw = JSON.stringify({
                 "httpMethod": "POST",
                 "body": JSON.stringify({
@@ -83,12 +83,12 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok ' + response.statusText);
                     }
-                    return response.json(); // Expecting JSON response
+                    return response.json(); 
                 })
                 .then(result => {
-                    console.log(result); // Log the result for debugging
+                    console.log(result); 
                     alert("Contact added successfully");
-                    getAllContacts();  // Refresh the contact list
+                    getAllContacts(); 
                 })
                 .catch(error => console.error('Error:', error));
         };
@@ -101,24 +101,22 @@
          });
 
          let requestOptions = {
-            method: 'POST', // Change to POST
+            method: 'POST', 
             headers: myHeaders,
-            body: raw, // Include the body with httpMethod
+            body: raw, 
             redirect: 'follow'
          };
 
          fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
             .then(response => response.json())
             .then(data => {
-                  console.log('API Response:', data); // Log the response
+                  console.log('API Response:', data); 
                   
                   const contactList = document.getElementById('contactList').querySelector('ul');
-                  contactList.innerHTML = ''; // Clear previous contacts
+                  contactList.innerHTML = ''; 
                   
-                  // Parse the body from the API response
+              
                   const contacts = JSON.parse(data.body);
-
-                  // Check if contacts is an array before calling forEach
                   if (Array.isArray(contacts)) {
                      contacts.forEach(contact => {
                         const li = document.createElement('li');
@@ -128,7 +126,7 @@
                         contactList.appendChild(li);
                      });
                   } else {
-                     // Handle cases where contacts is not an array
+          
                      console.error('Expected contacts to be an array but got:', contacts);
                      const li = document.createElement('li');
                      li.innerHTML = 'No contacts found or invalid data format.';
@@ -142,7 +140,6 @@
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    // Construct the body of the request according to the API's expected format
     let body = JSON.stringify({
         "httpMethod": "DELETE",
         "queryStringParameters": {
@@ -153,7 +150,7 @@
     let requestOptions = {
         method: 'DELETE',
         headers: myHeaders,
-        body: body, // Include the body with the necessary JSON structure
+        body: body, 
         redirect: 'follow'
     };
 
@@ -164,29 +161,29 @@
                     throw new Error('Network response was not ok: ' + JSON.stringify(err));
                 });
             }
-            return response.json(); // Expecting JSON response
+            return response.json(); 
         })
         .then(result => {
-            console.log('Delete result:', result); // Log the result for debugging
+            console.log('Delete result:', result); 
             if (result.errorMessage) {
                 alert("Error deleting contact: " + result.errorMessage);
             } else {
                 alert(result.body);
-                getAllContacts(); // Refresh the contact list
+                getAllContacts(); 
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert("Error deleting contact: " + error.message); // Display error to the user
+            alert("Error deleting contact: " + error.message); 
         });
 };
 const updateContact = (phone_number, new_fname, new_lname) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    // Construct the body of the request according to the API's expected format
+  
     let body = JSON.stringify({
-        "httpMethod": "PUT", // Assuming your API uses PUT for updates
+        "httpMethod": "PUT", 
         "body": JSON.stringify({
             "firstName": new_fname,
             "lastName": new_lname,
@@ -195,9 +192,9 @@ const updateContact = (phone_number, new_fname, new_lname) => {
     });
 
     let requestOptions = {
-        method: 'PUT', // Change to PUT
+        method: 'PUT', 
         headers: myHeaders,
-        body: body, // Include the body with the necessary JSON structure
+        body: body, 
         redirect: 'follow'
     };
 
@@ -208,24 +205,23 @@ const updateContact = (phone_number, new_fname, new_lname) => {
                     throw new Error('Network response was not ok: ' + JSON.stringify(err));
                 });
             }
-            return response.json(); // Expecting JSON response
+            return response.json();
         })
         .then(result => {
-            console.log('Update result:', result); // Log the result for debugging
+            console.log('Update result:', result); 
             if (result.errorMessage) {
                 alert("Error updating contact: " + result.errorMessage);
             } else {
                 alert(result.body);
-                getAllContacts(); // Refresh the contact list
+                getAllContacts(); 
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert("Error updating contact: " + error.message); // Display error to the user
+            alert("Error updating contact: " + error.message); 
         });
 };
 
-// Prepare the update fields when the edit button is clicked
 const prepareUpdate = (phone_number, first_name, last_name) => {
     document.getElementById('fNameUpdate').value = first_name;
     document.getElementById('lNameUpdate').value = last_name;
