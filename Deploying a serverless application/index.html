@@ -93,14 +93,19 @@
                 .catch(error => console.error('Error:', error));
         };
 
-        let getAllContacts = () => {
+       let getAllContacts = () => {
             let myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
         
-            // Wrap the request in the expected format
+            // Prepare the payload to send with the request
+            let raw = JSON.stringify({
+                "httpMethod": "GET"
+            });
+        
             let requestOptions = {
-                method: 'GET',
+                method: 'GET',  // Use GET method
                 headers: myHeaders,
+                body: raw,  // Include the payload (Note: not standard for GET)
                 redirect: 'follow'
             };
         
@@ -134,6 +139,7 @@
                 })
                 .catch(error => console.error('Error:', error));
         };
+
 
 
         let deleteContact = (phone_number) => {
