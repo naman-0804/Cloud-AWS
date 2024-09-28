@@ -66,7 +66,7 @@
                body: raw,
                redirect: 'follow'
             };
-            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101/firstappstage", requestOptions)
+            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
                .then(response => response.text())
                .then(result => {
                   alert("Contact added successfully");
@@ -76,7 +76,7 @@
          };
 
          let getAllContacts = () => {
-            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101/firstappstage")
+            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101")
                .then(response => response.json())
                .then(data => {
                   let contactList = document.getElementById("contactList");
@@ -101,7 +101,7 @@
                method: 'DELETE',
                redirect: 'follow'
             };
-            fetch(`https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101/firstappstage?phone_number=${phone_number}`, requestOptions)
+            fetch(`https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101?phone_number=${phone_number}`, requestOptions)
                .then(response => response.text())
                .then(result => {
                   alert("Contact deleted successfully");
@@ -124,7 +124,7 @@
                body: raw,
                redirect: 'follow'
             };
-            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101/firstappstage", requestOptions)
+            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
                .then(response => response.text())
                .then(result => {
                   alert("Contact updated successfully");
