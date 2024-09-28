@@ -6,70 +6,140 @@
       <style>
          body {
             background-color: #202b3c;
-            display: flex; /* Centering the form */
-            justify-content: center; /* Centering the form */
-            align-items: center; /* Centering the form */
-            height: 100vh; /* Centering the form */
-            margin: 0; /* Removing default margin */
-         }
-         form {
             display: flex;
-            flex-direction: column; /* Aligning form elements vertically */
-            align-items: center; /* Centering form elements horizontally */
-            background-color: #fff; /* Adding a white background to the form */
-            padding: 20px; /* Adding padding to the form */
-            border-radius: 8px; /* Adding border radius to the form */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+         }
+         form, #contactList {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
          }
          label, button {
             color: #FF9900;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 20px;
-            margin: 10px 0; /* Adding margin between elements */
+            margin: 10px 0;
          }
          input {
             color: #232F3E;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 20px;
-            margin: 10px 0; /* Adding margin between elements */
-            width: 250px; /* Setting input width */
-            padding: 5px; /* Adding padding to input */
+            margin: 10px 0;
+            width: 250px;
+            padding: 5px;
          }
          button {
-            background-color: #FF9900; /* Adding background color to button */
-            color: #fff; /* Changing button text color */
-            border: none; /* Removing button border */
-            padding: 10px 20px; /* Adding padding to button */
-            cursor: pointer; /* Changing cursor to pointer on hover */
+            background-color: #FF9900;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
          }
-         h1{
+         h1 {
             color: #202b3c;
             font-family: Arial, Helvetica, sans-serif;
          }
+         #contactList ul {
+            list-style: none;
+            padding: 0;
+         }
+         #contactList li {
+            background-color: #f1f1f1;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+         }
       </style>
       <script>
-         // Define the function to call the API with the provided first name, last name, and phone number
-         let callAPI = (fname, lname, pnumber)=>{
-            // Create a new Headers object and set the 'Content-Type' to 'application/json'
-             let myHeaders = new Headers();
-             myHeaders.append("Content-Type", "application/json");
-            
-            // Create the JSON string from the input values
-             let raw = JSON.stringify({"firstname": fname, "lastname": lname, "phone_number": pnumber});
-            
-            // Define the request options including method, headers, body, and redirect behavior
-             let requestOptions = {
-                 method: 'POST', // Method type
-                 headers: myHeaders, // Headers for the request
-                 body: raw, // The body of the request containing the JSON string
-                 redirect: 'follow' // Automatically follow redirects
-             };
-            
-            // Use the fetch API to send the request to the specified URL
-             fetch("https://7gl7qqjpertretretji.execute-api.us-west-1.amazonaws.com/firstappstage", requestOptions) // Replace "API_KEY" with your actual API endpoint
-             .then(response => response.text()) // Parse the response as text
-             .then(result => alert("success")) //print success 
-             .catch(error => console.log('error', error)); // Log any errors to the console
-         }
+         let callAPI = (fname, lname, pnumber) => {
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            let raw = JSON.stringify({"firstname": fname, "lastname": lname, "phone_number": pnumber});
+            let requestOptions = {
+               method: 'POST',
+               headers: myHeaders,
+               body: raw,
+               redirect: 'follow'
+            };
+            fetch("https://7gl7qqjpertretretji.execute-api.us-west-1.amazonaws.com/firstappstage", requestOptions)
+               .then(response => response.text())
+               .then(result => {
+                  alert("Contact added successfully");
+                  getAllContacts();
+               })
+               .catch(error => console.log('error', error));
+         };
+
+         let getAllContacts = () => {
+            fetch("https://7gl7qqjpertretretji.execute-api.us-west-1.amazonaws.com/firstappstage")
+               .then(response => response.json())
+               .then(data => {
+                  let contactList = document.getElementById("contactList");
+                  contactList.innerHTML = "";
+                  if (data.length > 0) {
+                     data.forEach(contact => {
+                        let li = document.createElement("li");
+                        li.innerHTML = `Name: ${contact.firstname} ${contact.lastname} | Phone: ${contact.phone_number}
+                           <button onclick="deleteContact('${contact.phone_number}')">Delete</button>
+                           <button onclick="prepareUpdate('${contact.phone_number}', '${contact.firstname}', '${contact.lastname}')">Update</button>`;
+                        contactList.appendChild(li);
+                     });
+                  } else {
+                     contactList.innerHTML = "<p>No contacts available</p>";
+                  }
+               })
+               .catch(error => console.log('error', error));
+         };
+
+         let deleteContact = (phone_number) => {
+            let requestOptions = {
+               method: 'DELETE',
+               redirect: 'follow'
+            };
+            fetch(`https://7gl7qqjpertretretji.execute-api.us-west-1.amazonaws.com/firstappstage?phone_number=${phone_number}`, requestOptions)
+               .then(response => response.text())
+               .then(result => {
+                  alert("Contact deleted successfully");
+                  getAllContacts();
+               })
+               .catch(error => console.log('error', error));
+         };
+
+         let updateContact = (phone_number, new_fname, new_lname) => {
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            let raw = JSON.stringify({
+               "firstname": new_fname,
+               "lastname": new_lname,
+               "phone_number": phone_number
+            });
+            let requestOptions = {
+               method: 'PUT',
+               headers: myHeaders,
+               body: raw,
+               redirect: 'follow'
+            };
+            fetch("https://7gl7qqjpertretretji.execute-api.us-west-1.amazonaws.com/firstappstage", requestOptions)
+               .then(response => response.text())
+               .then(result => {
+                  alert("Contact updated successfully");
+                  getAllContacts();
+               })
+               .catch(error => console.log('error', error));
+         };
+
+         let prepareUpdate = (phone_number, fname, lname) => {
+            document.getElementById('fNameUpdate').value = fname;
+            document.getElementById('lNameUpdate').value = lname;
+            document.getElementById('pNumberUpdate').value = phone_number;
+         };
+
+         window.onload = getAllContacts;
       </script>
    </head>
    <body>
@@ -82,8 +152,20 @@
          <label>Phone Number :</label>
          <input type="text" id="pNumber">
          <button type="button" onclick="callAPI(document.getElementById('fName').value, document.getElementById('lName').value, document.getElementById('pNumber').value)">Submit</button>
-         <!-- Button to submit user input without reloading the page -->
-         <!-- When clicked, it calls the callAPI function with values from the input fields -->
+      </form>
+      <div id="contactList">
+         <h1>All Contacts</h1>
+         <ul></ul>
+      </div>
+      <form>
+         <h1>Update Contact</h1>
+         <label>First Name :</label>
+         <input type="text" id="fNameUpdate">
+         <label>Last Name :</label>
+         <input type="text" id="lNameUpdate">
+         <label>Phone Number (Uneditable):</label>
+         <input type="text" id="pNumberUpdate" readonly>
+         <button type="button" onclick="updateContact(document.getElementById('pNumberUpdate').value, document.getElementById('fNameUpdate').value, document.getElementById('lNameUpdate').value)">Update</button>
       </form>
    </body>
 </html>
