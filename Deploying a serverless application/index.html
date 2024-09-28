@@ -93,23 +93,14 @@
                 .catch(error => console.error('Error:', error));
         };
 
-       let getAllContacts = () => {
-            let myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
+        let getAllContacts = () => {
+            // Prepare the URL with query parameters
+            const url = new URL("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101");
+            
+            // Append the httpMethod parameter as a query string (if necessary for your API)
+            url.searchParams.append("httpMethod", "GET");
         
-            // Prepare the payload to send with the request
-            let raw = JSON.stringify({
-                "httpMethod": "GET"
-            });
-        
-            let requestOptions = {
-                method: 'GET',  // Use GET method
-                headers: myHeaders,
-                body: raw,  // Include the payload (Note: not standard for GET)
-                redirect: 'follow'
-            };
-        
-            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
+            fetch(url)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok ' + response.statusText);
