@@ -94,25 +94,47 @@
         };
 
         let getAllContacts = () => {
-            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101")
-                .then(response => response.json())
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+        
+            // Wrap the request in the expected format
+            let requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+        
+            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json(); // Expecting JSON response
+                })
                 .then(data => {
                     let contactList = document.getElementById("contactList").querySelector("ul");
                     contactList.innerHTML = "";
-                    if (data.length > 0) {
-                        data.forEach(contact => {
-                            let li = document.createElement("li");
-                            li.innerHTML = `Name: ${contact.firstName} ${contact.lastName} | Phone: ${contact.phoneNumber}
-                                <button onclick="deleteContact('${contact.phoneNumber}')">Delete</button>
-                                <button onclick="prepareUpdate('${contact.phoneNumber}', '${contact.firstName}', '${contact.lastName}')">Update</button>`;
-                            contactList.appendChild(li);
-                        });
+                    if (data.body) {
+                        // Parse the body if it's a string
+                        const parsedData = JSON.parse(data.body);
+                        if (parsedData.length > 0) {
+                            parsedData.forEach(contact => {
+                                let li = document.createElement("li");
+                                li.innerHTML = `Name: ${contact.firstName} ${contact.lastName} | Phone: ${contact.phoneNumber}
+                                    <button onclick="deleteContact('${contact.phoneNumber}')">Delete</button>
+                                    <button onclick="prepareUpdate('${contact.phoneNumber}', '${contact.firstName}', '${contact.lastName}')">Update</button>`;
+                                contactList.appendChild(li);
+                            });
+                        } else {
+                            contactList.innerHTML = "<p>No contacts available</p>";
+                        }
                     } else {
                         contactList.innerHTML = "<p>No contacts available</p>";
                     }
                 })
                 .catch(error => console.error('Error:', error));
         };
+
 
         let deleteContact = (phone_number) => {
             let requestOptions = {
