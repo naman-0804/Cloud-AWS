@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-   <head>
-      <meta charset="UTF-8">
-      <title>Contact Management System</title>
-      <style>
-         body {
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Management System</title>
+    <style>
+        body {
             background-color: #202b3c;
             display: flex;
             flex-direction: column;
@@ -12,174 +12,174 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-         }
-         form, #contactList {
+        }
+        form, #contactList {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-         }
-         label, button {
+        }
+        label, button {
             color: #FF9900;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 20px;
             margin: 10px 0;
-         }
-         input {
+        }
+        input {
             color: #232F3E;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 20px;
             margin: 10px 0;
             width: 250px;
             padding: 5px;
-         }
-         button {
+        }
+        button {
             background-color: #FF9900;
             color: #fff;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
-         }
-         h1 {
+        }
+        h1 {
             color: #202b3c;
             font-family: Arial, Helvetica, sans-serif;
-         }
-         #contactList ul {
+        }
+        #contactList ul {
             list-style: none;
             padding: 0;
-         }
-         #contactList li {
+        }
+        #contactList li {
             background-color: #f1f1f1;
             margin: 10px 0;
             padding: 10px;
             border-radius: 5px;
-         }
-      </style>
-      <script>
-         let callAPI = (fname, lname, pnumber) => {
-             console.log("Calling API with:", { fname, lname, pnumber });
-             let myHeaders = new Headers();
-             myHeaders.append("Content-Type", "application/json");
-             
-             let raw = JSON.stringify({
-                 "firstName": fname,
-                 "lastName": lname,
-                 "phoneNumber": pnumber
-             });
-         
-             let requestOptions = {
-                 method: 'POST',
-                 headers: myHeaders,
-                 body: raw,
-                 redirect: 'follow'
-             };
-         
-             fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
-                 .then(response => {
-                     if (!response.ok) {
-                         throw new Error('Network response was not ok ' + response.statusText);
-                     }
-                     return response.json(); // Change to .json() if your response is in JSON format
-                 })
-                 .then(result => {
-                     alert("Contact added successfully");
-                     getAllContacts();  // Refresh the contact list
-                 })
-                 .catch(error => console.log('error', error));
-         };
+        }
+    </style>
+    <script>
+        let callAPI = (fname, lname, pnumber) => {
+            console.log("Calling API with:", { fname, lname, pnumber });
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
 
+            let raw = JSON.stringify({
+                "firstName": fname,
+                "lastName": lname,
+                "phoneNumber": pnumber
+            });
 
-         let getAllContacts = () => {
-            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101")
-               .then(response => response.json())
-               .then(data => {
-                  let contactList = document.getElementById("contactList");
-                  contactList.innerHTML = "";
-                  if (data.length > 0) {
-                     data.forEach(contact => {
-                        let li = document.createElement("li");
-                        li.innerHTML = `Name: ${contact.firstname} ${contact.lastname} | Phone: ${contact.phone_number}
-                           <button onclick="deleteContact('${contact.phone_number}')">Delete</button>
-                           <button onclick="prepareUpdate('${contact.phone_number}', '${contact.firstname}', '${contact.lastname}')">Update</button>`;
-                        contactList.appendChild(li);
-                     });
-                  } else {
-                     contactList.innerHTML = "<p>No contacts available</p>";
-                  }
-               })
-               .catch(error => console.log('error', error));
-         };
-
-         let deleteContact = (phone_number) => {
             let requestOptions = {
-               method: 'DELETE',
-               redirect: 'follow'
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
             };
-            fetch(`https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101?phone_number=${phone_number}`, requestOptions)
-               .then(response => response.text())
-               .then(result => {
-                  alert("Contact deleted successfully");
-                  getAllContacts();
-               })
-               .catch(error => console.log('error', error));
-         };
 
-         let updateContact = (phone_number, new_fname, new_lname) => {
+            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json(); // Expecting JSON response
+                })
+                .then(result => {
+                    console.log(result); // Log the result for debugging
+                    alert("Contact added successfully");
+                    getAllContacts();  // Refresh the contact list
+                })
+                .catch(error => console.error('Error:', error));
+        };
+
+        let getAllContacts = () => {
+            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101")
+                .then(response => response.json())
+                .then(data => {
+                    let contactList = document.getElementById("contactList").querySelector("ul");
+                    contactList.innerHTML = "";
+                    if (data.length > 0) {
+                        data.forEach(contact => {
+                            let li = document.createElement("li");
+                            li.innerHTML = `Name: ${contact.firstName} ${contact.lastName} | Phone: ${contact.phoneNumber}
+                                <button onclick="deleteContact('${contact.phoneNumber}')">Delete</button>
+                                <button onclick="prepareUpdate('${contact.phoneNumber}', '${contact.firstName}', '${contact.lastName}')">Update</button>`;
+                            contactList.appendChild(li);
+                        });
+                    } else {
+                        contactList.innerHTML = "<p>No contacts available</p>";
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        };
+
+        let deleteContact = (phone_number) => {
+            let requestOptions = {
+                method: 'DELETE',
+                redirect: 'follow'
+            };
+            fetch(`https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101?phoneNumber=${phone_number}`, requestOptions)
+                .then(response => response.text())
+                .then(result => {
+                    alert("Contact deleted successfully");
+                    getAllContacts();
+                })
+                .catch(error => console.error('Error:', error));
+        };
+
+        let updateContact = (phone_number, new_fname, new_lname) => {
             let myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             let raw = JSON.stringify({
-               "firstname": new_fname,
-               "lastname": new_lname,
-               "phone_number": phone_number
+                "firstName": new_fname,
+                "lastName": new_lname,
+                "phoneNumber": phone_number
             });
             let requestOptions = {
-               method: 'PUT',
-               headers: myHeaders,
-               body: raw,
-               redirect: 'follow'
+                method: 'PUT',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
             };
             fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
-               .then(response => response.text())
-               .then(result => {
-                  alert("Contact updated successfully");
-                  getAllContacts();
-               })
-               .catch(error => console.log('error', error));
-         };
+                .then(response => response.text())
+                .then(result => {
+                    alert("Contact updated successfully");
+                    getAllContacts();
+                })
+                .catch(error => console.error('Error:', error));
+        };
 
-         let prepareUpdate = (phone_number, fname, lname) => {
+        let prepareUpdate = (phone_number, fname, lname) => {
             document.getElementById('fNameUpdate').value = fname;
             document.getElementById('lNameUpdate').value = lname;
             document.getElementById('pNumberUpdate').value = phone_number;
-         };
+        };
 
-         window.onload = getAllContacts;
-      </script>
-   </head>
-   <body>
-      <form>
-         <h1>Contact Management System</h1>
-         <label>First Name :</label>
-         <input type="text" id="fName">
-         <label>Last Name :</label>
-         <input type="text" id="lName">
-         <label>Phone Number :</label>
-         <input type="text" id="pNumber">
-         <button type="button" onclick="callAPI(document.getElementById('fName').value, document.getElementById('lName').value, document.getElementById('pNumber').value)">Submit</button>
-      </form>
-      <div id="contactList">
-         <h1>All Contacts</h1>
-         <ul></ul>
-      </div>
-      <form>
-         <h1>Update Contact</h1>
-         <label>First Name :</label>
-         <input type="text" id="fNameUpdate">
-         <label>Last Name :</label>
-         <input type="text" id="lNameUpdate">
-         <label>Phone Number (Uneditable):</label>
-         <input type="text" id="pNumberUpdate" readonly>
-         <button type="button" onclick="updateContact(document.getElementById('pNumberUpdate').value, document.getElementById('fNameUpdate').value, document.getElementById('lNameUpdate').value)">Update</button>
-      </form>
-   </body>
+        window.onload = getAllContacts;
+    </script>
+</head>
+<body>
+    <form>
+        <h1>Contact Management System</h1>
+        <label>First Name :</label>
+        <input type="text" id="fName">
+        <label>Last Name :</label>
+        <input type="text" id="lName">
+        <label>Phone Number :</label>
+        <input type="text" id="pNumber">
+        <button type="button" onclick="callAPI(document.getElementById('fName').value, document.getElementById('lName').value, document.getElementById('pNumber').value)">Submit</button>
+    </form>
+    <div id="contactList">
+        <h1>All Contacts</h1>
+        <ul></ul>
+    </div>
+    <form>
+        <h1>Update Contact</h1>
+        <label>First Name :</label>
+        <input type="text" id="fNameUpdate">
+        <label>Last Name :</label>
+        <input type="text" id="lNameUpdate">
+        <label>Phone Number (Uneditable):</label>
+        <input type="text" id="pNumberUpdate" readonly>
+        <button type="button" onclick="updateContact(document.getElementById('pNumberUpdate').value, document.getElementById('fNameUpdate').value, document.getElementById('lNameUpdate').value)">Update</button>
+    </form>
+</body>
 </html>
