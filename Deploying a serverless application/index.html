@@ -56,93 +56,51 @@
         }
     </style>
     <script>
-        let callAPI = (fname, lname, pnumber) => {
-            console.log("Calling API with:", { fname, lname, pnumber });
-            let myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-        
-            // Wrap the data in httpMethod and body
-            let raw = JSON.stringify({
-                "httpMethod": "POST",
-                "body": JSON.stringify({
-                    "firstName": fname,
-                    "lastName": lname,
-                    "phoneNumber": pnumber
-                })
-            });
-        
-            let requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-        
-            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json(); // Expecting JSON response
-                })
-                .then(result => {
-                    console.log(result); // Log the result for debugging
-                    alert("Contact added successfully");
-                    getAllContacts();  // Refresh the contact list
-                })
-                .catch(error => console.error('Error:', error));
-        };
+      let getAllContacts = () => {
+         let myHeaders = new Headers();
+         myHeaders.append("Content-Type", "application/json");
 
-       let getAllContacts = () => {
-    // Prepare the URL with query parameters for the GET request
-            const url = new URL("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101");
-            
-            // Prepare the request payload in the expected format
-            let payload = JSON.stringify({
-                "httpMethod": "GET"
-            });
-        
-            // Use the fetch API to send a request, including the payload as a query parameter
-            const requestOptions = {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            };
-        
-            fetch(url, requestOptions)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json(); // Expecting JSON response
-                })
-                .then(data => {
-                    let contactList = document.getElementById("contactList").querySelector("ul");
-                    contactList.innerHTML = "";
-                    if (data.body) {
-                        // Parse the body if it's a string
-                        const parsedData = JSON.parse(data.body);
-                        if (parsedData.length > 0) {
-                            parsedData.forEach(contact => {
-                                let li = document.createElement("li");
-                                li.innerHTML = `Name: ${contact.firstName} ${contact.lastName} | Phone: ${contact.phoneNumber}
-                                    <button onclick="deleteContact('${contact.phoneNumber}')">Delete</button>
-                                    <button onclick="prepareUpdate('${contact.phoneNumber}', '${contact.firstName}', '${contact.lastName}')">Update</button>`;
-                                contactList.appendChild(li);
-                            });
-                        } else {
-                            contactList.innerHTML = "<p>No contacts available</p>";
-                        }
-                    } else {
-                        contactList.innerHTML = "<p>No contacts available</p>";
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        };
+         let raw = JSON.stringify({
+            "httpMethod": "GET"
+         });
 
+         let requestOptions = {
+            method: 'POST', // Change to POST
+            headers: myHeaders,
+            body: raw, // Include the body with httpMethod
+            redirect: 'follow'
+         };
 
+         fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                  console.log('API Response:', data); // Log the response
+                  
+                  const contactList = document.getElementById('contactList').querySelector('ul');
+                  contactList.innerHTML = ''; // Clear previous contacts
+                  
+                  // Parse the body from the API response
+                  const contacts = JSON.parse(data.body);
 
+                  // Check if contacts is an array before calling forEach
+                  if (Array.isArray(contacts)) {
+                     contacts.forEach(contact => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `${contact.firstName} ${contact.lastName} - ${contact.phoneNumber}
+                                          <button onclick="prepareUpdate('${contact.phoneNumber}', '${contact.firstName}', '${contact.lastName}')">Edit</button>
+                                          <button onclick="deleteContact('${contact.phoneNumber}')">Delete</button>`;
+                        contactList.appendChild(li);
+                     });
+                  } else {
+                     // Handle cases where contacts is not an array
+                     console.error('Expected contacts to be an array but got:', contacts);
+                     const li = document.createElement('li');
+                     li.innerHTML = 'No contacts found or invalid data format.';
+                     contactList.appendChild(li);
+                  }
+            })
+            .catch(error => console.error('Error:', error));
+      };
 
         let deleteContact = (phone_number) => {
             let requestOptions = {
