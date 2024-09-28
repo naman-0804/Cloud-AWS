@@ -180,37 +180,58 @@
             alert("Error deleting contact: " + error.message); // Display error to the user
         });
 };
+const updateContact = (phone_number, new_fname, new_lname) => {
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
+    // Construct the body of the request according to the API's expected format
+    let body = JSON.stringify({
+        "httpMethod": "PUT", // Assuming your API uses PUT for updates
+        "body": JSON.stringify({
+            "firstName": new_fname,
+            "lastName": new_lname,
+            "phoneNumber": phone_number
+        })
+    });
 
+    let requestOptions = {
+        method: 'PUT', // Change to PUT
+        headers: myHeaders,
+        body: body, // Include the body with the necessary JSON structure
+        redirect: 'follow'
+    };
 
-        let updateContact = (phone_number, new_fname, new_lname) => {
-            let myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            let raw = JSON.stringify({
-                "firstName": new_fname,
-                "lastName": new_lname,
-                "phoneNumber": phone_number
-            });
-            let requestOptions = {
-                method: 'PUT',
-                headers: myHeaders,
-                body: raw,
-                redirect: 'follow'
-            };
-            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
-                .then(response => response.text())
-                .then(result => {
-                    alert("Contact updated successfully");
-                    getAllContacts();
-                })
-                .catch(error => console.error('Error:', error));
-        };
+    fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error('Network response was not ok: ' + JSON.stringify(err));
+                });
+            }
+            return response.json(); // Expecting JSON response
+        })
+        .then(result => {
+            console.log('Update result:', result); // Log the result for debugging
+            if (result.errorMessage) {
+                alert("Error updating contact: " + result.errorMessage);
+            } else {
+                alert(result.body);
+                getAllContacts(); // Refresh the contact list
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Error updating contact: " + error.message); // Display error to the user
+        });
+};
 
-        let prepareUpdate = (phone_number, fname, lname) => {
-            document.getElementById('fNameUpdate').value = fname;
-            document.getElementById('lNameUpdate').value = lname;
-            document.getElementById('pNumberUpdate').value = phone_number;
-        };
+// Prepare the update fields when the edit button is clicked
+const prepareUpdate = (phone_number, first_name, last_name) => {
+    document.getElementById('fNameUpdate').value = first_name;
+    document.getElementById('lNameUpdate').value = last_name;
+    document.getElementById('pNumberUpdate').value = phone_number;
+};
+
 
         window.onload = getAllContacts;
     </script>
