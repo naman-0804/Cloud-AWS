@@ -93,14 +93,24 @@
                 .catch(error => console.error('Error:', error));
         };
 
-        let getAllContacts = () => {
-            // Prepare the URL with query parameters
+       let getAllContacts = () => {
+    // Prepare the URL with query parameters for the GET request
             const url = new URL("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101");
             
-            // Append the httpMethod parameter as a query string (if necessary for your API)
-            url.searchParams.append("httpMethod", "GET");
+            // Prepare the request payload in the expected format
+            let payload = JSON.stringify({
+                "httpMethod": "GET"
+            });
         
-            fetch(url)
+            // Use the fetch API to send a request, including the payload as a query parameter
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            };
+        
+            fetch(url, requestOptions)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok ' + response.statusText);
@@ -130,6 +140,7 @@
                 })
                 .catch(error => console.error('Error:', error));
         };
+
 
 
 
