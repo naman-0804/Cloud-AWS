@@ -56,6 +56,42 @@
         }
     </style>
     <script>
+            let callAPI = (fname, lname, pnumber) => {
+            console.log("Calling API with:", { fname, lname, pnumber });
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+        
+            // Wrap the data in httpMethod and body
+            let raw = JSON.stringify({
+                "httpMethod": "POST",
+                "body": JSON.stringify({
+                    "firstName": fname,
+                    "lastName": lname,
+                    "phoneNumber": pnumber
+                })
+            });
+        
+            let requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+        
+            fetch("https://rcio9v739h.execute-api.ap-south-1.amazonaws.com/backend-22bps1101", requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json(); // Expecting JSON response
+                })
+                .then(result => {
+                    console.log(result); // Log the result for debugging
+                    alert("Contact added successfully");
+                    getAllContacts();  // Refresh the contact list
+                })
+                .catch(error => console.error('Error:', error));
+        };
       let getAllContacts = () => {
          let myHeaders = new Headers();
          myHeaders.append("Content-Type", "application/json");
