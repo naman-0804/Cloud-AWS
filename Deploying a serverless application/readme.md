@@ -1,4 +1,4 @@
-Step 1: Deploy the frontend (index.html) code on AWS Amplify
+Step 1: Deploy the frontend (index.html) code on AWS Amplify <br/>
 Step 2: Create an AWS Lambda Serverless function
 Step 3: Create Rest API with API Gateway (Set up the CORS too)
 Step 4: Create a DynamoDB table
