@@ -3,7 +3,7 @@ import boto3
 
 # Initialize DynamoDB resource and specify the table
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('22bps1101_contact-manager')
+table = dynamodb.Table('22bnager')
 
 def lambda_handler(event, context):
     # Get HTTP method (POST, GET, PUT, DELETE)
