@@ -19,14 +19,14 @@
 
     <script>
         AWS.config.update({
-            accessKeyId: 'xxxxxxxxxxxxx', 
-            secretAccessKey: 'xxxxxxxxx', 
+            accessKeyId: 'xxxxxxxxx', 
+            secretAccessKey: 'xxxxxxxx', 
             region: 'us-east-1'
         });
 
         const s3 = new AWS.S3();
-        const bucketName = 'naman-22bps1101'; 
-        const fileKey = 'registration-details.json'; 
+        const bucketName = 'namn-01'; 
+        const fileKey = 'regists.json'; 
 
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
